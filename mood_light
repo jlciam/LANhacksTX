@@ -1,0 +1,79 @@
+/*
+/* 
+*  Adapted from the Grove Temperature Sensor, Fade, and Liquid LCD RGB backlight demos.
+*  Sensor detects the environment temperature, connect the signal of this sensor to A0, 
+*  and use Serial monitor to get the result.
+*  
+*/
+#include <math.h>
+#include <Wire.h>
+#include "rgb_lcd.h"
+
+//Initialize variables for temperature sensor
+int a;
+float temperature;
+int B=3975;	//B value of thermistor
+float resistance;
+
+rgb_lcd lcd;
+
+//LED Pin 13
+int led = 13;
+
+const int colorR = 255;
+const int colorG = 0;
+const int colorB = 0;
+
+
+void setup() {
+	//TODO need to change this so we can display output to LCD
+	Serial.begin(9600);
+
+
+	// Initialize LED as output
+	pinMode(led,OUTPUT);
+
+	// set up the LCD's number of columns and rows:
+	lcd.begin(16, 2);
+    
+    lcd.setRGB(colorR, colorG, colorB);
+    
+	//TODO change this so that it changes with the reading of the temperature
+    // Print a message to the LCD.
+    lcd.print("hello, world!");
+
+    delay(1000);
+}
+
+void loop() {
+	//turn on the LED
+	digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+	
+	// set the cursor to column 0, line 1
+	// (note: line 1 is the second row, since counting begins with 0):
+	lcd.setCursor(0, 1);
+	// print the number of seconds since reset:
+	lcd.print(millis()/1000);
+	delay(100);
+
+	a=analogRead(0);
+	resistance=(float)(1023-a)*10000/a; //get the resistance of the sensor;
+	temperature=1/(log(resistance/10000)/B+1/298.15)-273.15;//convert to temperature via datasheet ;
+	delay(1000);
+	//TODO change Serial to LCD display	
+	Serial.print("Current temperature is ");
+	Serial.println(temperature);
+
+
+
+	//delay(1000);               // wait for a second
+	//digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+	//delay(1000);               // wait for a second
+
+
+}
+
+
+
+
+
