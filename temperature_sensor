@@ -8,34 +8,24 @@
 #include <math.h>
 #include <Wire.h>
 #include "rgb_lcd.h"
-
 //Initialize variables for temperature sensor
 int a;
 float temperature;
 int B=3975;	//B value of thermistor
 float resistance;
-
 rgb_lcd lcd;
-
 //RGB color values
-int colorR = 221;
-int colorG = 221;
-int colorB = 221;
+int colorR = 200;
+int colorG = 100;
+int colorB = 200;
 int buttonState = 0;
-
 float oldTemp = 0;
-
-
 const int buttonPin=3;
-
 void setup() {
 	pinMode(buttonPin, INPUT);
-
 	lcd.begin(16, 2);
         lcd.setRGB(colorR, colorG, colorB);
 } 
- 
-
 void loop() {
 	int sensorValue = digitalRead(buttonPin);	
 	// set the cursor to column 0, line 0
@@ -48,33 +38,23 @@ void loop() {
 		resistance=(float)(1023-a)*10000/a; //get the resistance of the sensor;
 		temperature=1/(log(resistance/10000)/B+1/298.15) - 273.15;//convert to temperature via datasheet ;
 		temperature = (float) temperature * 1.8 + 32;	//Convert celsius to fahrenheit
-                
                 float newTemp = temperature;
-                
-                
-                
 		if (oldTemp >= newTemp) {
 			colorB += (50);
 			colorR -= (50);
-			colorG += (10);
+			colorG += (5);
 		} else if (newTemp > oldTemp) {
 			colorR += (50);
 			colorR -= (50);
-			colorG -= (10);
+			colorG -= (5);
                 }
                 lcd.print(" F     ");
 		lcd.setRGB(colorR, colorG, colorB);
-
                 oldTemp = temperature;
-
 	} else if (sensorValue == 0) {
 		lcd.print("Please click     ");
 		lcd.setCursor(0,1);
 		lcd.print("for the temp");
 	}
-
-
-        
-
-	delay(500);
+	delay(1000);
 }
